@@ -1,23 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../utils/supabase";
 import { Link } from "react-router";
-
-export interface Community {
-	id: string;
-	name: string;
-	description: string;
-	created_at: string;
-}
-
-export const fetchCommunities = async (): Promise<Community[]> => {
-	const { data, error } = await supabase
-		.from("communities")
-		.select("*")
-		.order("created_at", { ascending: false });
-	if (error) throw new Error(error.message);
-	console.log(data);
-	return data as Community[];
-};
+import { fetchCommunities } from "../utils/communities";
 
 export const CommunityList = () => {
 	const { data, isError, error, isLoading } = useQuery({

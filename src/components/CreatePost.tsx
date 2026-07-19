@@ -3,7 +3,7 @@ import { useState, type ChangeEvent } from "react";
 import React from "react";
 import { supabase } from "../utils/supabase";
 import { useAuth } from "../context/AuthContext";
-import { fetchCommunities } from "./CommunityList";
+import { fetchCommunities } from "../utils/communities";
 import { useNavigate } from "react-router";
 
 interface PostInput {
