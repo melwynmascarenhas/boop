@@ -17,7 +17,7 @@ export const CommunityList = () => {
 
 	return (
 		<div className="max-w-5xl mx-auto space-y-4">
-			{data.map((community) => (
+			{data?.map((community) => (
 				<div
 					key={community.id}
 					className="border border-white/10 p-4 rounded hover:-translate-y-1 transition transform"

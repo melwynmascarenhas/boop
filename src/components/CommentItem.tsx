@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../utils/supabase";
-import type { commentInputType } from "./CommentSection";
+import type { commentInputType, CommentWithChildren } from "./CommentSection";
 
 //create function to add reply to supabase
 async function addReply(replyInput: commentInputType) {
@@ -18,7 +18,11 @@ async function addReply(replyInput: commentInputType) {
 	return data;
 }
 
-export const CommentItem = ({ comment }) => {
+interface CommentItemProps {
+	comment: CommentWithChildren;
+}
+
+export const CommentItem = ({ comment }: CommentItemProps) => {
 	const { user } = useAuth();
 
 	const [showReply, setShowReply] = useState(false);
@@ -145,7 +149,7 @@ export const CommentItem = ({ comment }) => {
 
 					{!isCollapsed && (
 						<div className="space-y-2">
-							{comment.children.map((child, key) => (
+							{comment.children?.map((child: CommentWithChildren, key: number) => (
 								<CommentItem key={key} comment={child} />
 							))}
 						</div>

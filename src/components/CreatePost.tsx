@@ -15,6 +15,9 @@ interface PostInput {
 }
 
 async function createPost(post: PostInput) {
+	if (!post.imageFile) {
+		throw new Error("Image file is required");
+	}
 	const filePath = `${post.title}-${Date.now()}-${post.imageFile.name}`;
 	const { error: uploadError } = await supabase.storage
 		.from("post-images")

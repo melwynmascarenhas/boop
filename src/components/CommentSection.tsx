@@ -26,6 +26,10 @@ export interface Comment {
 	created_at: string;
 }
 
+export interface CommentWithChildren extends Comment {
+	children?: CommentWithChildren[];
+}
+
 //create function to add comment to supabase
 async function addComment(commentInput: commentInputType) {
 	const { data, error } = await supabase.from("comments").insert({
@@ -105,13 +109,13 @@ export const CommentSection = ({ postId }: Props) => {
 		return <div>{fetchError.message}</div>;
 	}
 
-	//function to build comments tree without typescript
+	//function to build comments tree with typescript
 
-	const buildCommentsTree = (flatComments) => {
+	const buildCommentsTree = (flatComments: Comment[]): CommentWithChildren[] => {
 		//create a map to store comments
-		const map = new Map();
+		const map = new Map<string, CommentWithChildren>();
 		//create an array to store roots
-		const roots = [];
+		const roots: CommentWithChildren[] = [];
 
 		//loop through comments and populate the map with comment objects with children property
 		flatComments.forEach((comment) => {
@@ -125,11 +129,20 @@ export const CommentSection = ({ postId }: Props) => {
 				//this is a child comment and has to be pushed to its parent's children array
 				const parent = map.get(parentId);
 				if (parent) {
-					parent.children.push(map.get(comment.id));
+					if (!parent.children) {
+						parent.children = [];
+					}
+					const child = map.get(comment.id);
+					if (child) {
+						parent.children.push(child);
+					}
 				}
 			} else {
 				// push the parent comment with children populated from map into roots array
-				roots.push(map.get(comment.id));
+				const mappedComment = map.get(comment.id);
+				if (mappedComment) {
+					roots.push(mappedComment);
+				}
 			}
 		});
 		return roots;
