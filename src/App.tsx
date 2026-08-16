@@ -9,9 +9,10 @@ import { CommunityPage } from "./pages/CommunityPage";
 
 function App() {
 	return (
-		<div className="min-h-screen bg-black text-gray-100 transition-opacity duration-700 pt-20">
+		<div className="min-h-screen bg-black text-zinc-100 relative">
+			<div className="fixed inset-0 bg-grid opacity-50 pointer-events-none z-0" />
 			<Navbar />
-			<div className="container mx-auto px-4 py-6">
+			<main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-12">
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/create" element={<CreatePostPage />} />
@@ -20,7 +21,7 @@ function App() {
 					<Route path="/communities" element={<CommunitiesPage />} />
 					<Route path="/community/:id" element={<CommunityPage />} />
 				</Routes>
-			</div>
+			</main>
 		</div>
 	);
 }

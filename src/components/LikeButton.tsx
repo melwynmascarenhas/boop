@@ -135,29 +135,35 @@ export const LikeButton = ({ postId }: Props) => {
 	const userHasDisliked = userVote?.vote === -1;
 
 	if (fetchLoading) {
-		return <div>Loading likes...</div>;
+		return <div className="font-mono text-xs text-zinc-500 my-2">Loading reactions...</div>;
 	}
 	if (isFetchError) {
-		return <div>{fetchError.message}</div>;
+		return <div className="font-mono text-xs text-red-400 my-2">Error: {fetchError.message}</div>;
 	}
 
 	return (
-		<div className="flex items-center space-x-4 my-4">
+		<div className="flex items-center space-x-3 my-4 font-mono text-xs">
 			<button
 				onClick={() => handleVote(1)}
-				className={`px-3 py-1 cursor-pointer rounded transition-colors duration-150 ${
-					userHasLiked ? "bg-green-500 text-white" : "bg-gray-200 text-black"
+				className={`px-3 py-1.5 cursor-pointer rounded-md border transition-colors duration-150 flex items-center space-x-2 ${
+					userHasLiked
+						? "bg-emerald-950/80 border-emerald-700/80 text-emerald-300 font-semibold"
+						: "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/80"
 				}`}
 			>
-				👍{likes}
+				<span>👍</span>
+				<span>{likes ?? 0}</span>
 			</button>
 			<button
 				onClick={() => handleVote(-1)}
-				className={`px-3 py-1 cursor-pointer rounded transition-colors duration-150 ${
-					userHasDisliked ? "bg-red-500 text-white" : "bg-gray-200 text-black"
+				className={`px-3 py-1.5 cursor-pointer rounded-md border transition-colors duration-150 flex items-center space-x-2 ${
+					userHasDisliked
+						? "bg-red-950/80 border-red-800/80 text-red-300 font-semibold"
+						: "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/80"
 				}`}
 			>
-				👎{dislikes}
+				<span>👎</span>
+				<span>{dislikes ?? 0}</span>
 			</button>
 		</div>
 	);

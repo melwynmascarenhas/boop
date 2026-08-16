@@ -65,55 +65,65 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
 		setShowReply(!showReply);
 	}
 	return (
-		<div className="pl-4 border-l border-white/10">
+		<div className="pl-4 border-l border-zinc-800 space-y-2">
 			{/* Display Comment content */}
-			<div className="mb-2">
+			<div className="space-y-1">
 				{/* Display Comment Author and time */}
-				<div className="flex items-center space-x-2">
-					<span className="text-sm font-bold text-blue-400">
-						{comment.author}
+				<div className="flex items-center space-x-2 font-mono text-xs">
+					<span className="font-semibold text-zinc-200">
+						{comment.author || "Anonymous"}
 					</span>
-					<span className="text-xs text-gray-500">
+					<span className="text-zinc-600">•</span>
+					<span className="text-[10px] text-zinc-500 uppercase tracking-wider">
 						{new Date(comment.created_at).toLocaleString()}
 					</span>
 				</div>
 				{/* Display Comment */}
-				<p className="text-gray-300">{comment.content}</p>
-				<button onClick={toggleReply} className="text-blue-500 text-sm mt-1">
-					{showReply ? "Cancel" : "Reply"}
-				</button>
+				<p className="text-sm text-zinc-300 leading-normal">{comment.content}</p>
+				<div className="flex items-center space-x-3 pt-0.5 font-mono text-xs">
+					<button
+						onClick={toggleReply}
+						className="text-zinc-400 hover:text-white transition-colors cursor-pointer"
+					>
+						{showReply ? "Cancel" : "Reply"}
+					</button>
+				</div>
 			</div>
 
 			{/* Reply Input */}
 			{showReply && user && (
-				<form onSubmit={handleReplySubmit} className="mb-2">
+				<form onSubmit={handleReplySubmit} className="mt-2 space-y-2">
 					<textarea
 						name="reply"
 						rows={2}
-						placeholder="Write your reply"
+						placeholder="Write a reply..."
 						value={replyText}
 						onChange={(e) => setReplyText(e.target.value)}
-						className="w-full border border-white/10 bg-transparent p-2 rounded"
+						className="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-600 rounded-md p-2.5 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none transition-colors"
 					/>
-					<button
-						type="submit"
-						disabled={!replyText}
-						className="mt-1 bg-blue-500 text-white px-3 py-1 rounded"
-					>
-						{isPending ? "Replying..." : "Reply"}
-					</button>
-					{isError && (
-						<p className="text-red-500 mt-2">Error replying to the comment.</p>
-					)}
+					<div className="flex items-center justify-between">
+						{isError ? (
+							<p className="text-red-400 font-mono text-xs">Error posting reply.</p>
+						) : <div />}
+						<button
+							type="submit"
+							disabled={!replyText || isPending}
+							className="bg-white text-black font-mono text-xs uppercase tracking-wider font-medium px-3 py-1 rounded-md hover:bg-zinc-200 transition-colors disabled:opacity-40 cursor-pointer"
+						>
+							{isPending ? "Replying..." : "Submit Reply"}
+						</button>
+					</div>
 				</form>
 			)}
 
 			{comment.children && comment.children.length > 0 && (
-				<div>
+				<div className="mt-2 space-y-2">
 					<button
 						onClick={() => setIsCollapsed((prev) => !prev)}
-						title={isCollapsed ? "Hide Replies" : "Show Replies"}
+						className="flex items-center space-x-1.5 font-mono text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+						title={isCollapsed ? "Show Replies" : "Hide Replies"}
 					>
+						<span className="uppercase tracking-wider">{isCollapsed ? "Show replies" : "Hide replies"} ({comment.children.length})</span>
 						{isCollapsed ? (
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +131,7 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
 								viewBox="0 0 24 24"
 								strokeWidth={2}
 								stroke="currentColor"
-								className="w-4 h-4"
+								className="w-3 h-3"
 							>
 								<path
 									strokeLinecap="round"
@@ -136,7 +146,7 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
 								viewBox="0 0 24 24"
 								strokeWidth={2}
 								stroke="currentColor"
-								className="w-4 h-4"
+								className="w-3 h-3"
 							>
 								<path
 									strokeLinecap="round"
@@ -148,7 +158,7 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
 					</button>
 
 					{!isCollapsed && (
-						<div className="space-y-2">
+						<div className="space-y-3 pt-1">
 							{comment.children?.map((child: CommentWithChildren, key: number) => (
 								<CommentItem key={key} comment={child} />
 							))}

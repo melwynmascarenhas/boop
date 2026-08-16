@@ -105,12 +105,11 @@ export function CreatePost() {
 
 	return (
 		<form
-			action=""
 			onSubmit={handleSubmit}
-			className="max-w-2xl mx-auto space-y-4"
+			className="max-w-2xl mx-auto bg-zinc-950/80 border border-zinc-800 rounded-lg p-6 sm:p-8 space-y-5 shadow-sm"
 		>
 			<div>
-				<label htmlFor="title" className="block mb-2 font-medium">
+				<label htmlFor="title" className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block">
 					Title
 				</label>
 				<input
@@ -119,13 +118,13 @@ export function CreatePost() {
 					name="title"
 					value={title}
 					required
-					placeholder="Enter your post title here..."
+					placeholder="Enter your post title..."
 					onChange={(e) => setTitle(e.target.value)}
-					className="w-full border border-white/10 bg-transparent p-2 rounded"
+					className="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-600 rounded-md p-3 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none transition-colors"
 				/>
 			</div>
 			<div>
-				<label htmlFor="content" className="block mb-2 font-medium">
+				<label htmlFor="content" className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block">
 					Content
 				</label>
 				<textarea
@@ -134,22 +133,22 @@ export function CreatePost() {
 					value={content}
 					rows={5}
 					required
-					placeholder="Enter your post content here..."
+					placeholder="Enter your post content..."
 					onChange={(e) => setContent(e.target.value)}
-					className="w-full border border-white/10 bg-transparent p-2 rounded"
+					className="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-600 rounded-md p-3 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none transition-colors"
 				></textarea>
 			</div>
 
 			<div>
-				<label className="block mb-2 font-medium"> Select Community</label>
+				<label className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block"> Select Community</label>
 				<select
 					id="community"
 					onChange={handleCommunityChange}
-					className="w-full border border-white/10 bg-transparent p-2 rounded"
+					className="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-600 rounded-md p-3 text-sm text-zinc-100 focus:outline-none transition-colors"
 				>
-					<option value={""}> -- Choose a Community -- </option>
+					<option value="" className="bg-zinc-900 text-zinc-400"> -- Choose a Community -- </option>
 					{communities?.map((community, key) => (
-						<option key={key} value={community.id}>
+						<option key={key} value={community.id} className="bg-zinc-900 text-zinc-100">
 							{community.name}
 						</option>
 					))}
@@ -157,8 +156,8 @@ export function CreatePost() {
 			</div>
 
 			<div>
-				<label htmlFor="image" className="block mb-2 font-medium">
-					Image
+				<label htmlFor="image" className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block">
+					Banner Image
 				</label>
 				<input
 					id="image"
@@ -167,16 +166,20 @@ export function CreatePost() {
 					type="file"
 					accept="image/*"
 					onChange={handleFileChange}
-					className="w-full text-gray-200"
+					className="w-full text-xs font-mono text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-zinc-800 file:bg-zinc-900 file:text-zinc-300 file:font-mono file:text-xs file:uppercase hover:file:bg-zinc-800 cursor-pointer"
 				></input>
 			</div>
-			<button
-				type="submit"
-				className="bg-purple-500 text-white px-4 py-2 rounded cursor-pointer"
-			>
-				{isPending ? "Creating..." : "Create Post"}
-			</button>
-			{isError && <p className="text-red-500"> {mutationError.message}</p>}
+
+			<div className="pt-2">
+				<button
+					type="submit"
+					disabled={isPending}
+					className="w-full sm:w-auto bg-white text-black font-mono text-xs uppercase tracking-wider font-semibold px-6 py-2.5 rounded-md hover:bg-zinc-200 transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+				>
+					{isPending ? "Creating..." : "Create Post"}
+				</button>
+			</div>
+			{isError && <p className="text-red-400 font-mono text-xs pt-2"> {mutationError.message}</p>}
 		</form>
 	);
 }

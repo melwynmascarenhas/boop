@@ -22,31 +22,52 @@ export const PostDetail = ({ postId }: { postId: string }) => {
 	});
 
 	if (isLoading) {
-		return <div>Loading post...</div>;
+		return (
+			<div className="bg-zinc-950/80 border border-zinc-800 rounded-lg p-8 space-y-4 animate-pulse">
+				<div className="h-4 w-24 bg-zinc-900 rounded"></div>
+				<div className="h-8 w-3/4 bg-zinc-900 rounded"></div>
+				<div className="h-64 bg-zinc-900/60 rounded"></div>
+			</div>
+		);
 	}
 	if (isError) {
-		return <div>{error.message}</div>;
+		return (
+			<div className="p-4 rounded-md border border-red-900/50 bg-red-950/20 text-red-400 font-mono text-xs">
+				Failed to load post: {error.message}
+			</div>
+		);
 	}
 
 	return (
-		<div className="space-y-6">
-			<h2 className="text-6xl font-bold mb-6 text-center bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-				{data?.title}
-			</h2>
-			{data?.image_url && (
-				<img
-					src={data.image_url}
-					alt={data?.title}
-					className="mt-4 rounded object-cover w-full h-64"
-				/>
-			)}
-			<p className="text-gray-400">{data?.content}</p>
-			<p className="text-gray-500 text-sm">
-				Posted on: {new Date(data!.created_at).toLocaleDateString()}
-			</p>
+		<div className="bg-zinc-950/80 border border-zinc-800 rounded-lg p-6 sm:p-8 space-y-6 shadow-sm">
+			<div className="space-y-3">
+				<div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-zinc-500 border-b border-zinc-800/80 pb-3">
+					<span>Post Details</span>
+					<span>{new Date(data!.created_at).toLocaleDateString()}</span>
+				</div>
+				<h1 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-tight">
+					{data?.title}
+				</h1>
+			</div>
 
-			<LikeButton postId={postId} />
-			<CommentSection postId={postId} />
+			{data?.image_url && (
+				<div className="overflow-hidden rounded-md border border-zinc-800/80 bg-zinc-900 aspect-video w-full">
+					<img
+						src={data.image_url}
+						alt={data?.title}
+						className="w-full h-full object-cover"
+					/>
+				</div>
+			)}
+
+			<div className="text-zinc-300 text-sm sm:text-base leading-relaxed whitespace-pre-wrap font-sans">
+				{data?.content}
+			</div>
+
+			<div className="pt-4 border-t border-zinc-800/80 space-y-6">
+				<LikeButton postId={postId} />
+				<CommentSection postId={postId} />
+			</div>
 		</div>
 	);
 };

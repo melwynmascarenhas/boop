@@ -2,10 +2,18 @@ import { CommunityList } from "../components/CommunityList";
 
 export const CommunitiesPage = () => {
 	return (
-		<div className="pt-20">
-			<h2 className="text-6xl font-bold mb-6 text-center bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-				Communities
-			</h2>
+		<div className="pt-6 space-y-6">
+			<div className="space-y-2 border-b border-zinc-800/80 pb-6">
+				<p className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
+					Directory / Hub
+				</p>
+				<h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+					Communities
+				</h1>
+				<p className="text-sm text-zinc-400">
+					Discover topic spaces and join conversations across Boop.
+				</p>
+			</div>
 			<CommunityList />
 		</div>
 	);

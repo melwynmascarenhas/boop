@@ -103,10 +103,10 @@ export const CommentSection = ({ postId }: Props) => {
 	});
 
 	if (fetchLoading) {
-		return <div>Loading likes...</div>;
+		return <div className="font-mono text-xs text-zinc-500 mt-6">Loading comments...</div>;
 	}
 	if (isFetchError) {
-		return <div>{fetchError.message}</div>;
+		return <div className="font-mono text-xs text-red-400 mt-6">Error: {fetchError.message}</div>;
 	}
 
 	//function to build comments tree with typescript
@@ -151,41 +151,52 @@ export const CommentSection = ({ postId }: Props) => {
 	const commentsTree = comments ? buildCommentsTree(comments) : [];
 
 	return (
-		<div className="mt-6">
-			<h3 className="text-2xl font-semibold mb-4">Comments</h3>
-			{/* Create Comment Section */}
+		<div className="mt-8 space-y-6">
+			<div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+				<h3 className="text-lg font-semibold text-white tracking-tight">Comments</h3>
+				<span className="font-mono text-xs text-zinc-500">{comments?.length ?? 0} total</span>
+			</div>
 
+			{/* Create Comment Section */}
 			{user ? (
-				<form action="" onSubmit={handleSubmit} className="mb-4">
+				<form onSubmit={handleSubmit} className="space-y-3">
 					<textarea
 						name="comment"
 						id="comment"
 						rows={3}
-						placeholder="Write your comment"
+						placeholder="Add to the discussion..."
 						value={newCommentText}
 						onChange={(e) => setNewCommentText(e.target.value)}
-						className="w-full border border-white/10 bg-transparent p-2 rounded"
+						className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-zinc-600 rounded-md p-3 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none transition-colors"
 					/>
-					<button
-						type="submit"
-						disabled={!newCommentText}
-						className="mt-2 bg-purple-500 text-white px-4 py-2 rounded cursor-pointer"
-					>
-						{isPending ? "Posting comment..." : "Post Comment"}
-					</button>
-					{isError && (
-						<p className="text-red-500 mt-2">Error posting comment.</p>
-					)}
+					<div className="flex items-center justify-between">
+						{isError ? (
+							<p className="text-red-400 font-mono text-xs">Error posting comment.</p>
+						) : <div />}
+						<button
+							type="submit"
+							disabled={!newCommentText || isPending}
+							className="bg-white text-black font-mono text-xs uppercase tracking-wider font-medium px-4 py-2 rounded-md hover:bg-zinc-200 transition-colors disabled:opacity-40 cursor-pointer"
+						>
+							{isPending ? "Posting..." : "Post Comment"}
+						</button>
+					</div>
 				</form>
 			) : (
-				<div>login to comment</div>
+				<div className="p-4 border border-zinc-800/80 rounded-md bg-zinc-900/40 text-center font-mono text-xs text-zinc-400">
+					Please sign in to join the discussion.
+				</div>
 			)}
 
 			{/* Comment Display Section */}
-			<div className="space-y-4">
-				{commentsTree.map((comment) => (
-					<CommentItem key={comment.id} comment={comment} />
-				))}
+			<div className="space-y-4 pt-2">
+				{commentsTree.length === 0 ? (
+					<p className="text-center font-mono text-xs text-zinc-500 py-6">No comments yet. Be the first to comment!</p>
+				) : (
+					commentsTree.map((comment) => (
+						<CommentItem key={comment.id} comment={comment} />
+					))
+				)}
 			</div>
 		</div>
 	);

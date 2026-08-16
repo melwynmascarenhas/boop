@@ -11,36 +11,41 @@ export default function Navbar() {
 	const displayName = user?.user_metadata.name || user?.user_metadata.email;
 
 	return (
-		<nav className="fixed top-0 w-full z-40 bg-[rgba(10,10,10,0.8)] backdrop-blur-lg border-b border-white/10 shadow-lg">
-			<div className="max-w-5xl mx-auto px-4">
-				<div className="flex justify-between items-center h-16">
-					<Link to="/" className="font-mono text-xl font-bold text-white">
-						Boop
+		<nav className="fixed top-0 w-full z-40 bg-black/80 backdrop-blur-md border-b border-zinc-800">
+			<div className="max-w-6xl mx-auto px-4 sm:px-6">
+				<div className="flex justify-between items-center h-14">
+					<Link to="/" className="flex items-center gap-2 group">
+						<span className="font-mono text-base font-bold text-white tracking-wider uppercase">
+							Boop
+						</span>
+						<span className="font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 group-hover:border-zinc-700 transition-colors">
+							v1.0
+						</span>
 					</Link>
 
 					{/* Desktop Links */}
-					<div className="hidden md:flex items-center space-x-8">
+					<div className="hidden md:flex items-center space-x-1 font-mono text-xs uppercase tracking-wider">
 						<Link
 							to="/"
-							className="text-gray-300 hover:text-white transition-colors"
+							className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
 						>
 							Home
 						</Link>
 						<Link
-							to="/create"
-							className="text-gray-300 hover:text-white transition-colors"
-						>
-							Create Post
-						</Link>
-						<Link
 							to="/communities"
-							className="text-gray-300 hover:text-white transition-colors"
+							className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
 						>
 							Communities
 						</Link>
 						<Link
+							to="/create"
+							className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
+						>
+							Create Post
+						</Link>
+						<Link
 							to="/community/create"
-							className="text-gray-300 hover:text-white transition-colors"
+							className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
 						>
 							Create Community
 						</Link>
@@ -49,18 +54,18 @@ export default function Navbar() {
 					{/* Desktop Auth */}
 					<div className="hidden md:flex items-center">
 						{user ? (
-							<div className="flex items-center space-x-4">
+							<div className="flex items-center space-x-3">
 								{user.user_metadata?.avatar_url && (
 									<img
 										src={user.user_metadata.avatar_url}
 										alt="User Avatar"
-										className="w-8 h-8 rounded-full object-cover"
+										className="w-7 h-7 rounded-full border border-zinc-800 object-cover"
 									/>
 								)}
-								<span className="text-gray-300">{displayName}</span>
+								<span className="text-xs font-mono text-zinc-300 max-w-35 truncate">{displayName}</span>
 								<button
 									onClick={signOut}
-									className="bg-red-500 px-3 py-1 rounded"
+									className="px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 font-mono text-xs uppercase tracking-wider transition-colors"
 								>
 									Sign Out
 								</button>
@@ -68,7 +73,7 @@ export default function Navbar() {
 						) : (
 							<button
 								onClick={signInWithGithub}
-								className="bg-blue-500 px-3 py-1 rounded"
+								className="px-4 py-1.5 rounded-md bg-white text-black font-mono text-xs uppercase tracking-wider font-medium hover:bg-zinc-200 transition-colors shadow-xs"
 							>
 								Sign in with GitHub
 							</button>
@@ -79,10 +84,10 @@ export default function Navbar() {
 					<div className="md:hidden">
 						<button
 							onClick={() => setMenuOpen(!menuOpen)}
-							className="text-gray-300 focus:outline-none"
+							className="p-1.5 text-zinc-400 hover:text-white focus:outline-none"
 							aria-label="Toggle menu"
 						>
-							{menuOpen ? <LucideX size={24} /> : <LucideMenu size={24} />}
+							{menuOpen ? <LucideX size={20} /> : <LucideMenu size={20} />}
 						</button>
 					</div>
 				</div>
@@ -90,32 +95,54 @@ export default function Navbar() {
 
 			{/* Mobile Menu */}
 			{menuOpen && (
-				<div className="md:hidden bg-[rgba(10,10,10,0.9)]">
-					<div className="px-2 pt-2 pb-3 space-y-1">
-						<Link
-							to="/"
-							className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-						>
-							Home
-						</Link>
-						<Link
-							to="/create"
-							className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-						>
-							Create Post
-						</Link>
-						<Link
-							to="/communities"
-							className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-						>
-							Communities
-						</Link>
-						<Link
-							to="/community/create"
-							className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-						>
-							Create Community
-						</Link>
+				<div className="md:hidden border-b border-zinc-800 bg-zinc-950/95 px-4 pt-2 pb-4 space-y-2 font-mono text-xs uppercase tracking-wider">
+					<Link
+						to="/"
+						onClick={() => setMenuOpen(false)}
+						className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
+					>
+						Home
+					</Link>
+					<Link
+						to="/communities"
+						onClick={() => setMenuOpen(false)}
+						className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
+					>
+						Communities
+					</Link>
+					<Link
+						to="/create"
+						onClick={() => setMenuOpen(false)}
+						className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
+					>
+						Create Post
+					</Link>
+					<Link
+						to="/community/create"
+						onClick={() => setMenuOpen(false)}
+						className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
+					>
+						Create Community
+					</Link>
+					<div className="pt-2 border-t border-zinc-800/80">
+						{user ? (
+							<div className="flex items-center justify-between pt-1">
+								<span className="text-zinc-400 text-xs truncate max-w-45">{displayName}</span>
+								<button
+									onClick={signOut}
+									className="px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white text-xs uppercase tracking-wider"
+								>
+									Sign Out
+								</button>
+							</div>
+						) : (
+							<button
+								onClick={signInWithGithub}
+								className="w-full py-2 rounded-md bg-white text-black font-mono text-xs uppercase tracking-wider font-medium hover:bg-zinc-200 transition-colors"
+							>
+								Sign in with GitHub
+							</button>
+						)}
 					</div>
 				</div>
 			)}
