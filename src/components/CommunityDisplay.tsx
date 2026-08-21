@@ -1,5 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import { Trash2 } from "lucide-react";
 import { supabase } from "../utils/supabase";
+import { useAuth } from "../context/AuthContext";
 import { PostItem } from "./PostItem";
 import type { Post } from "./PostList";
 
@@ -26,12 +29,58 @@ const fetchPostsByCommunity = async (
 };
 
 export const CommunityDisplay = ({ communityId }: Props) => {
-	const { data, isError, error, isLoading } = useQuery({
+	const { user } = useAuth();
+	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+
+	const { data: posts, isError: isPostsError, error: postsError, isLoading: isPostsLoading } = useQuery({
 		queryKey: ["community-posts", communityId],
 		queryFn: () => fetchPostsByCommunity(communityId),
 	});
 
-	if (isLoading) {
+	const { data: community, isLoading: isCommunityLoading } = useQuery({
+		queryKey: ["community", communityId],
+		queryFn: async () => {
+			const { data, error } = await supabase
+				.from("communities")
+				.select("*")
+				.eq("id", communityId)
+				.single();
+			if (error) throw error;
+			return data as {
+				id: string;
+				name: string;
+				description?: string;
+				user_id?: string;
+				creator_id?: string;
+			};
+		},
+	});
+
+	const deleteCommunityMutation = useMutation({
+		mutationFn: async () => {
+			const { error } = await supabase.from("communities").delete().eq("id", communityId);
+			if (error) throw new Error(error.message);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["communities"] });
+			navigate("/communities");
+		},
+	});
+
+	const isCreator = Boolean(
+		user &&
+			community &&
+			(community.user_id === user.id || community.creator_id === user.id)
+	);
+
+	const handleDeleteCommunity = () => {
+		if (window.confirm("Are you sure you want to delete this community?")) {
+			deleteCommunityMutation.mutate();
+		}
+	};
+
+	if (isPostsLoading || isCommunityLoading) {
 		return (
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 				{[1, 2, 3].map((i) => (
@@ -43,30 +92,47 @@ export const CommunityDisplay = ({ communityId }: Props) => {
 			</div>
 		);
 	}
-	if (isError) {
+	if (isPostsError) {
 		return (
 			<div className="p-4 rounded-md border border-red-900/50 bg-red-950/20 text-red-400 font-mono text-xs">
-				Failed to load community posts: {error.message}
+				Failed to load community posts: {postsError.message}
 			</div>
 		);
 	}
 
-	const communityName = data && data.length > 0 ? data[0].communities?.name : "Community";
+	const communityName = community?.name || (posts && posts.length > 0 ? posts[0].communities?.name : "Community");
 
 	return (
 		<div className="space-y-6">
-			<div className="space-y-2 border-b border-zinc-800/80 pb-6">
-				<p className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
-					Community / Feed
-				</p>
-				<h1 className="text-3xl font-semibold tracking-tight text-white">
-					{communityName}
-				</h1>
+			{/* Header: Community Name on Left, Delete Button on Right */}
+			<div className="flex items-center justify-between border-b border-zinc-800/80 pb-6">
+				<div>
+					<h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+						{communityName}
+					</h1>
+					{community?.description && (
+						<p className="text-xs font-mono text-zinc-400 mt-1">{community.description}</p>
+					)}
+				</div>
+
+				{isCreator && (
+					<button
+						onClick={handleDeleteCommunity}
+						disabled={deleteCommunityMutation.isPending}
+						className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-500 hover:text-red-400 transition-colors cursor-pointer disabled:opacity-50"
+						title="Delete this community"
+					>
+						<Trash2 className="w-3.5 h-3.5" />
+						<span>
+							{deleteCommunityMutation.isPending ? "Deleting..." : "Delete this community"}
+						</span>
+					</button>
+				)}
 			</div>
 
-			{data && data.length > 0 ? (
+			{posts && posts.length > 0 ? (
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-					{data.map((post) => (
+					{posts.map((post) => (
 						<PostItem key={post.id} post={post} />
 					))}
 				</div>

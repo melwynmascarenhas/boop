@@ -11,7 +11,10 @@ interface PostInput {
 	content: string;
 	imageFile: File | null;
 	community_id: string | null;
+	user_id: string;
 	avatar_url: string | null;
+	author_name: string | null;
+	author_email: string | null;
 }
 
 async function createPost(post: PostInput) {
@@ -37,8 +40,11 @@ async function createPost(post: PostInput) {
 		title: post.title,
 		content: post.content,
 		community_id: post.community_id,
+		user_id: post.user_id,
 		image_url: publicUrlData.publicUrl,
 		avatar_url: post.avatar_url,
+		author_name: post.author_name,
+		author_email: post.author_email,
 	});
 
 	if (postError) {
@@ -50,8 +56,11 @@ async function createPost(post: PostInput) {
 
 export function CreatePost() {
 	const { user } = useAuth();
-
-	const avatar_url = user?.user_metadata.avatar_url;
+	console.log(user);
+	const avatar_url = user?.user_metadata?.avatar_url || null;
+	const author_name =
+		user?.user_metadata?.name || user?.user_metadata?.email || null;
+	const author_email = user?.email || null;
 
 	const navigate = useNavigate();
 
@@ -90,6 +99,10 @@ export function CreatePost() {
 
 	const handleSubmit = (event: React.SyntheticEvent) => {
 		event.preventDefault();
+		if (!user) {
+			alert("You must be logged in to create a post");
+			return;
+		}
 		if (!title || !content || !imageFile) {
 			alert("Please fill in all the fields");
 			return;
@@ -98,7 +111,10 @@ export function CreatePost() {
 			title: title,
 			content: content,
 			community_id: communityId,
+			user_id: user.id,
 			avatar_url: avatar_url,
+			author_name: author_name,
+			author_email: author_email,
 			imageFile: imageFile,
 		});
 	};
@@ -109,7 +125,10 @@ export function CreatePost() {
 			className="max-w-2xl mx-auto bg-zinc-950/80 border border-zinc-800 rounded-lg p-6 sm:p-8 space-y-5 shadow-sm"
 		>
 			<div>
-				<label htmlFor="title" className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block">
+				<label
+					htmlFor="title"
+					className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block"
+				>
 					Title
 				</label>
 				<input
@@ -124,7 +143,10 @@ export function CreatePost() {
 				/>
 			</div>
 			<div>
-				<label htmlFor="content" className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block">
+				<label
+					htmlFor="content"
+					className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block"
+				>
 					Content
 				</label>
 				<textarea
@@ -140,15 +162,25 @@ export function CreatePost() {
 			</div>
 
 			<div>
-				<label className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block"> Select Community</label>
+				<label className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block">
+					{" "}
+					Select Community
+				</label>
 				<select
 					id="community"
 					onChange={handleCommunityChange}
 					className="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-600 rounded-md p-3 text-sm text-zinc-100 focus:outline-none transition-colors"
 				>
-					<option value="" className="bg-zinc-900 text-zinc-400"> -- Choose a Community -- </option>
+					<option value="" className="bg-zinc-900 text-zinc-400">
+						{" "}
+						-- Choose a Community --{" "}
+					</option>
 					{communities?.map((community, key) => (
-						<option key={key} value={community.id} className="bg-zinc-900 text-zinc-100">
+						<option
+							key={key}
+							value={community.id}
+							className="bg-zinc-900 text-zinc-100"
+						>
 							{community.name}
 						</option>
 					))}
@@ -156,7 +188,10 @@ export function CreatePost() {
 			</div>
 
 			<div>
-				<label htmlFor="image" className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block">
+				<label
+					htmlFor="image"
+					className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-medium mb-1.5 block"
+				>
 					Banner Image
 				</label>
 				<input
@@ -179,7 +214,12 @@ export function CreatePost() {
 					{isPending ? "Creating..." : "Create Post"}
 				</button>
 			</div>
-			{isError && <p className="text-red-400 font-mono text-xs pt-2"> {mutationError.message}</p>}
+			{isError && (
+				<p className="text-red-400 font-mono text-xs pt-2">
+					{" "}
+					{mutationError.message}
+				</p>
+			)}
 		</form>
 	);
 }

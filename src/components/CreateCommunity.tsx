@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../utils/supabase";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 interface communityInputType {
 	name: string;
 	description: string;
+	user_id: string;
 }
 
 //create function to add reply to supabase
@@ -13,6 +15,7 @@ async function createCommunity(communityInput: communityInputType) {
 	const { data, error } = await supabase.from("communities").insert({
 		name: communityInput.name,
 		description: communityInput.description,
+		user_id: communityInput.user_id,
 	});
 
 	if (error) throw new Error(error.message);
@@ -20,6 +23,7 @@ async function createCommunity(communityInput: communityInputType) {
 }
 
 export const CreateCommunity = () => {
+	const { user } = useAuth();
 	const [name, setName] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
 	const queryClient = useQueryClient();
@@ -40,9 +44,14 @@ export const CreateCommunity = () => {
 
 	function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
+		if (!user) {
+			alert("You must be logged in to create a community");
+			return;
+		}
 		mutate({
 			name,
 			description,
+			user_id: user.id,
 		});
 	}
 

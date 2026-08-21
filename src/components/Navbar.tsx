@@ -18,9 +18,6 @@ export default function Navbar() {
 						<span className="font-mono text-base font-bold text-white tracking-wider uppercase">
 							Boop
 						</span>
-						<span className="font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-400 group-hover:border-zinc-700 transition-colors">
-							v1.0
-						</span>
 					</Link>
 
 					{/* Desktop Links */}
@@ -37,18 +34,22 @@ export default function Navbar() {
 						>
 							Communities
 						</Link>
-						<Link
-							to="/create"
-							className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
-						>
-							Create Post
-						</Link>
-						<Link
-							to="/community/create"
-							className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
-						>
-							Create Community
-						</Link>
+						{user && (
+							<>
+								<Link
+									to="/create"
+									className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
+								>
+									Create Post
+								</Link>
+								<Link
+									to="/community/create"
+									className="px-3 py-2 text-zinc-400 hover:text-white hover:bg-zinc-900/60 rounded-md transition-colors"
+								>
+									Create Community
+								</Link>
+							</>
+						)}
 					</div>
 
 					{/* Desktop Auth */}
@@ -62,7 +63,9 @@ export default function Navbar() {
 										className="w-7 h-7 rounded-full border border-zinc-800 object-cover"
 									/>
 								)}
-								<span className="text-xs font-mono text-zinc-300 max-w-35 truncate">{displayName}</span>
+								<span className="text-xs font-mono text-zinc-300 max-w-35 truncate">
+									{displayName}
+								</span>
 								<button
 									onClick={signOut}
 									className="px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 font-mono text-xs uppercase tracking-wider transition-colors"
@@ -110,24 +113,30 @@ export default function Navbar() {
 					>
 						Communities
 					</Link>
-					<Link
-						to="/create"
-						onClick={() => setMenuOpen(false)}
-						className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
-					>
-						Create Post
-					</Link>
-					<Link
-						to="/community/create"
-						onClick={() => setMenuOpen(false)}
-						className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
-					>
-						Create Community
-					</Link>
+					{user && (
+						<>
+							<Link
+								to="/create"
+								onClick={() => setMenuOpen(false)}
+								className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
+							>
+								Create Post
+							</Link>
+							<Link
+								to="/community/create"
+								onClick={() => setMenuOpen(false)}
+								className="block px-3 py-2 rounded-md text-zinc-300 hover:text-white hover:bg-zinc-900"
+							>
+								Create Community
+							</Link>
+						</>
+					)}
 					<div className="pt-2 border-t border-zinc-800/80">
 						{user ? (
 							<div className="flex items-center justify-between pt-1">
-								<span className="text-zinc-400 text-xs truncate max-w-45">{displayName}</span>
+								<span className="text-zinc-400 text-xs truncate max-w-45">
+									{displayName}
+								</span>
 								<button
 									onClick={signOut}
 									className="px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white text-xs uppercase tracking-wider"

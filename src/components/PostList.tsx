@@ -8,9 +8,17 @@ export interface Post {
 	content: string;
 	created_at: string;
 	image_url: string;
+	user_id?: string;
+	community_id?: string | null;
 	avatar_url?: string;
+	author_name?: string;
+	author_email?: string;
 	like_count?: number;
 	comment_count?: number;
+	communities?: {
+		id?: string;
+		name?: string;
+	} | null;
 }
 
 const fetchPosts = async (): Promise<Post[]> => {
