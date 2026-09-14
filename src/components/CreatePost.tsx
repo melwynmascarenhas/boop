@@ -56,7 +56,6 @@ async function createPost(post: PostInput) {
 
 export function CreatePost() {
 	const { user } = useAuth();
-	console.log(user);
 	const avatar_url = user?.user_metadata?.avatar_url || null;
 	const author_name =
 		user?.user_metadata?.name || user?.user_metadata?.email || null;
